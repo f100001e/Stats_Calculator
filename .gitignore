@@ -1,5 +1,30 @@
+# Python cache and junk
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
+
+# Build artifacts
 build/
 *.spec
+
+# Logs and temp files
+*.log
+*.toc
+*.html
+
+# Installer packages (not tracked unless explicitly added)
+*.pkg
+*.zip
+
+# macOS system files
+.DS_Store
+
+# Virtual environments
+venv/
+.env/
+
+# Ignore everything in dist/ except LFS-tracked binaries
+dist/*
+!dist/*.exe
+!dist/StatsCalculator
+

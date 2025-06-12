@@ -94,7 +94,7 @@ def visualize_data(df, frame, canvas):
     sns.histplot(df['y'], kde=True, ax=axes[1, 1])
     axes[1, 1].set_title("Histogram + KDE of y")
     axes[1, 1].set_xlabel("y")
-    axes[1, 1].set_ylabel("Density")
+    axes[1, 1].set_ylabel("P(y)")
 
     plt.tight_layout()
 
