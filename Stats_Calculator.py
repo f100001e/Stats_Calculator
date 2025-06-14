@@ -1,5 +1,6 @@
 import matplotlib
 matplotlib.use('TkAgg')
+from scipy.stats import zscore, norm
 
 
 import pandas as pd
@@ -222,6 +223,7 @@ def cdf_visualization(root):
     # Prompt for dataset
     x_input = simpledialog.askstring("Input", "Enter X values (comma-separated):", parent=window)
     y_input = simpledialog.askstring("Input", "Enter Y values (comma-separated):", parent=window)
+
     try:
         x_values = list(map(float, x_input.split(",")))
         y_values = list(map(float, y_input.split(",")))
@@ -240,31 +242,50 @@ def cdf_visualization(root):
         return
     col_choice = col_choice.strip().lower()
 
+    # Sort and process data
     data = np.sort(df[col_choice])
     ecdf = np.arange(1, len(data) + 1) / len(data)
     stats_info = df[col_choice].describe().to_string()
 
-    # Plot Empirical CDF
+    # Set up plot
     fig, ax = plt.subplots(figsize=(8, 5))
-    ax.plot(data, ecdf, marker='.', linestyle='none', color='orange', label="Empirical CDF")
+    ax.step(data, ecdf, where='post', color='orange', linewidth=2.5, label="Empirical CDF")
 
-    # Prompt for a value to annotate
+
+    # Prompt for value to evaluate
+    x_eval = simpledialog.askstring(
+        "Evaluate CDF",
+        f"Enter a value for ECDF on '{col_choice}' (or 'min', 'max', 'mean'):",
+        parent=window
+    )
+
     try:
-        x_obs = float(simpledialog.askstring(
-            "Input", f"Enter a value to evaluate for CDF ({col_choice}):", parent=window))
-    except Exception:
-        messagebox.showerror("Error", "Invalid numeric input.")
+        if x_eval:
+            x_eval = x_eval.strip().lower()
+            if x_eval == 'max':
+                x_val = data.max()
+            elif x_eval == 'min':
+                x_val = data.min()
+            elif x_eval == 'mean':
+                x_val = data.mean()
+            else:
+                x_val = float(x_eval)
+
+            percentile = np.mean(data <= x_val)
+            ax.axvline(x=x_val, color='red', linestyle='--',
+                       label=f'Input = {x_val}\nPercentile ≈ {percentile:.2%}')
+            ax.axhline(y=percentile, color='red', linestyle=':')
+            ax.legend()
+            messagebox.showinfo("ECDF Value", f"Empirical CDF at x = {x_val} is approximately {percentile:.4f}")
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Invalid input: {e}")
         return
 
-    percentile = np.mean(data <= x_obs)
-    ax.axvline(x=x_obs, color='red', linestyle='--',
-               label=f'Input = {x_obs}\nPercentile ≈ {percentile:.2%}')
-    ax.axhline(y=percentile, color='red', linestyle=':')
-
-    ax.set_title(f"Empirical CDF of {col_choice}")
+    # Final plot styling
+    ax.set_title(f"Empirical CDF of '{col_choice}'")
     ax.set_xlabel(col_choice)
     ax.set_ylabel("Cumulative Probability")
-    ax.legend()
     ax.grid(True)
     plt.tight_layout()
 
@@ -273,7 +294,7 @@ def cdf_visualization(root):
     canvas_plot.draw()
     canvas_plot.get_tk_widget().pack(pady=(10, 20))
 
-    # Descriptive stats below
+    # Descriptive stats
     text_frame = Frame(frame, bg="#333")
     text_frame.pack(fill="both", expand=True, padx=10, pady=10)
     text_widget = Text(text_frame, height=12, wrap="none", bg="#333", fg="white", font=("Arial", 12))
