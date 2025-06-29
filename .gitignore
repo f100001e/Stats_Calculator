@@ -1,4 +1,4 @@
-# Python cache and junk
+# Python cache and bytecode
 __pycache__/
 *.py[cod]
 *.pyo
@@ -12,7 +12,7 @@ build/
 *.toc
 *.html
 
-# Installer packages (not tracked unless explicitly added)
+# Installer packages
 *.pkg
 *.zip
 
@@ -23,8 +23,10 @@ build/
 venv/
 .env/
 
-# Ignore everything in dist/ except LFS-tracked binaries
+# Ignore everything in dist/…
 dist/*
-!dist/*.exe
-!dist/StatsCalculator
 
+# …except your one-file binaries (Windows EXE, macOS .app, or plain executable)
+!dist/*.exe
+!dist/*.app/
+!dist/Stats_Calculator
