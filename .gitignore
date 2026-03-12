@@ -1,0 +1,32 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Build artifacts
+build/
+*.spec
+
+# Logs and temp files
+*.log
+*.toc
+*.html
+
+# Installer packages
+*.pkg
+*.zip
+
+# macOS system files
+.DS_Store
+
+# Virtual environments
+venv/
+.env/
+
+# Ignore everything in dist/…
+dist/*
+
+# …except your one-file binaries (Windows EXE, macOS .app, or plain executable)
+!dist/*.exe
+!dist/*.app/
+!dist/Stats_Calculator
